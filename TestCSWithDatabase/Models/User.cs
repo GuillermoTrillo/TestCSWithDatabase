@@ -2,17 +2,8 @@
 {
     public class User
     {
-        int id;
-        string name;
-        string password;
-
-        public string getName()
-        {
-            return name; 
-        }
-        public void setName(string newName)
-        {
-            name = newName;
-        }
+        public int id { get; set; }
+        public string name { get; set; }
+        public string password { get; set; }
     }
 }
