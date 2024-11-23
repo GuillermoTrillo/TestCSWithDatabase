@@ -3,6 +3,8 @@ using TestCSWithDatabase.Models;
 
 namespace TestCSWithDatabase.Services
 {
+
+    //USE SqlCommand.Parameters documentation if need help.
     public class UserDAO
     {
         //Is the link used to make the connection with the specified Database.
@@ -11,7 +13,9 @@ namespace TestCSWithDatabase.Services
 
         public bool FindUserByPassword(User user)
         {
-            string sqlStatement = "SELECT * FROM dbo.User WHERE user.name = @userName AND user.password = @userPassword";
+            bool hasSucceed = false;
+
+            string sqlStatement = "SELECT * FROM dbo.User WHERE user.password = @userPassword";
             //With this using, you will be able to actually make the connection. 
             //The code inside the {} will be done using the connection.
             using (SqlConnection connection = new SqlConnection(connectionString))
@@ -20,9 +24,25 @@ namespace TestCSWithDatabase.Services
                 //by using the statement you made and using the connection, you can define parameters
                 //using the .Add function.
                 SqlCommand command = new SqlCommand(sqlStatement, connection);
-                command.Parameters.Add("@userName", System.Data.SqlDbType.VarChar, 50).Value = user.name;
+                command.Parameters.Add("@userPassword", System.Data.SqlDbType.VarChar, 50).Value = user.password;
 
+                try
+                {
+                    connection.Open();
+                    SqlDataReader reader = command.ExecuteReader();
+
+                    if (reader.HasRows)
+                    {
+                        hasSucceed = true;
+                    }
+                }
+                catch(Exception e)
+                {
+                    Console.WriteLine(e.Message);
+                }
             }
+
+            return hasSucceed;
         }
     }
 }
